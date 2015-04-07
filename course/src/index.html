@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Prime search</title>
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+</head>
+<body>
+
+    <div class="container">
+        <!--<nav>-->
+            <!--<ul>-->
+                <!--<li><a href="#search">Prime search</a></li>-->
+                <!--<li><a href="#list">List</a></li>-->
+                <!--<li><a href="#map">Map</a></li>-->
+            <!--</ul>-->
+        <!--</nav>-->
+
+        <div id="search">
+            <div class="row">
+                <div class="pull-left">
+                    <input class="btn"  type="button" value="Start" id="startSearch">
+                </div>
+                <div class="pull-left">
+                    <ul>
+                        <li>Numbers enumerate: <span id="checkedCount"></span></li>
+                        <li>Primes found: <span id="primesCount"></span></li>
+                        <li>Application ran: <span id="ranTimes"></span></li>
+                        <li>Total time: <span id="totalTime"></span></li>
+                        <li>Max: <span id="maxTime"></span></li>
+                        <li>Min: <span id="minTime"></span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="list">
+
+        </div>
+
+        <div id="map">
+
+        </div>
+
+    </div>
+
+    <!--Scripts-->
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+    <!--Custom scripts-->
+    <script src="scripts/primeNumbersService.js"></script>
+    <script src="scripts/statisticBinding.js"></script>
+    <script src="scripts/statistic.js"></script>
+    <script src="scripts/app.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            window.app = new app();
+            var searchSel = $("#startSearch");
+            searchSel.click(function(){
+                if(app.isRunning){
+                    searchSel.val("Start");
+                    app.stop();
+                }
+                else {
+                    searchSel.val("Stop");
+                    app.start();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
