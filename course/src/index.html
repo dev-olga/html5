@@ -5,6 +5,7 @@
     <title>Prime search</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="styles/common.css">
 
 </head>
 <body>
@@ -47,12 +48,16 @@
                 </div>
             </div>
 
-            <div id="map"  class="col-md-6">
+            <div id="map" class="pull-left">
                 <div class="panel panel-primary ">
                     <div class="panel-body">
                         <p>
                             <input class="btn btn-primary"  type="button" value="Show found numbers" id="show-image">
                         </p>
+                        <div>
+                            <canvas id="canvas" width="300" height="300" style="display: none;">
+                            </canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,22 +80,19 @@
             window.app = new app();
             window.app.init();
 
-            var searchSelector = $("#start-search");
-            searchSelector.click(function(){
+            $("#start-search").click(function(){
                 if(window.app.isRunning){
-                    searchSelector.val("Start");
+                    $(this).val("Start");
                     window.app.stop();
                 }
                 else {
-                    searchSelector.val("Stop");
+                    $(this).val("Stop");
                     window.app.start();
                 }
             });
 
-            var showNumbersSelector = $("#show-found");
-            var numbersListTableSelector = $('#numbers-list');
             var numbersListTable;
-            showNumbersSelector.click(function(){
+            $("#show-found").click(function(){
                 window.app.getFoundNumbers(function(list){
                     var out = [];
                     for(var i=0; i<list.length; i++){
@@ -99,7 +101,7 @@
                     if(numbersListTable){
                         numbersListTable.destroy();
                     }
-                    numbersListTable = numbersListTableSelector.DataTable( {
+                    numbersListTable = $('#numbers-list').DataTable( {
                         "data": out,
                         "columns": [
                             { "title": "Numbers" }
@@ -107,6 +109,39 @@
                     } );
                 });
             })
+
+            $("#show-image").click(function(){
+                window.app.getFoundNumbers(function(list){
+                    var size = Math.ceil(Math.sqrt(list.length));
+
+                    var c = $("#canvas")[0];
+                    var scale = 5;
+                    c.width = c.height = size * scale;
+
+                    var ctx = c.getContext("2d");
+                    ctx.scale(scale,scale);
+
+                    // Clear
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fillRect(0, 0, size, size);
+
+                    // Draw
+                    for(var i=0; i<size; i++){
+                        for(var j=0; j<size; j++){
+                            if(list.indexOf(i*size+j+1) > -1){
+                                ctx.fillStyle = "#000000";
+                            }
+                            else{
+                                ctx.fillStyle = "#FFFFFF";
+                            }
+                            ctx.fillRect(j, i, 1, 1);
+                        }
+                    }
+
+                    $(c).show();
+                });
+            });
+
 
         });
     </script>

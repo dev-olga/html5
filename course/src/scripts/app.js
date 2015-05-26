@@ -18,8 +18,14 @@ app = function(){
 
     this.stop = function(){
         this.isRunning = false;
-        resetWorker();
-        clearInterval(timer);
+        try{
+            resetWorker();
+            clearInterval(timer);
+        }
+        catch (ex){
+            alert(ex);
+        }
+
 
         var executionTime = Math.round(((new Date()) - startTime)/1000);
         if(statistic.maxTime < executionTime){
