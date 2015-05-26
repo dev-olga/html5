@@ -9,9 +9,17 @@ app = function(){
 
     this.isRunning = false;
 
+    this.init = function(){
+        if(!service){
+            service = new primeNumbersService();
+            service.init();
+        }
+    }
+
     this.stop = function(){
         this.isRunning = false;
         resetWorker();
+        clearInterval(timer);
 
         var executionTime = Math.round(((new Date()) - startTime)/1000);
         if(statistic.maxTime < executionTime){
@@ -21,7 +29,7 @@ app = function(){
             statistic.minTime = executionTime;
         }
         startTime = undefined;
-        clearInterval(timer);
+
     }
 
     this.start = function(){
@@ -31,17 +39,12 @@ app = function(){
         timer = setInterval(function(){statistic.totalTime += 1;}, 1000);
 
         if(!worker) {
-            if(!service){
-                service = new primeNumbersService();
-                service.onInit = function() {
-                    checkNext();
-                }
-                service.init();
-            }
-            else {
-                checkNext();
-            }
+            checkNext();
         }
+    }
+    
+    this.getFoundNumbers = function(callback){
+        readAll(callback);
     }
 
     var resetWorker = function(){
@@ -65,6 +68,8 @@ app = function(){
                 number: number
             });
             worker.onmessage = function (event) {
+                resetWorker();
+                
                 if (!event.data.error && event.data.isPrime) {
                     service.add(number);
                     if(statistic.primes === undefined){
@@ -72,8 +77,6 @@ app = function(){
                     }
                     statistic.primes += 1;
                 }
-
-                resetWorker();
                 statistic.lastChecked = number;
                 checkNext();
             };
@@ -82,6 +85,24 @@ app = function(){
 
     var createWorker = function(){
         return new Worker("scripts/checkNumber.js");
+    }
+    
+    var readAll = function(callback){
+        var list = [];
+        var cursor = service.getCursor();
+        cursor.onsuccess = function(e) {
+            var res = e.target.result;
+            if(res) {
+                list.push(res.value);
+                res.continue();
+            }
+            else{
+                callback(list)
+            }
+        }
+        cursor.onerror = function(e) {
+            callback(list);
+        }
     }
 
 }

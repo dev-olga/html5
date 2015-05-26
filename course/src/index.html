@@ -3,51 +3,66 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Prime search</title>
-    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+
 </head>
 <body>
 
     <div class="container">
-        <!--<nav>-->
-            <!--<ul>-->
-                <!--<li><a href="#search">Prime search</a></li>-->
-                <!--<li><a href="#list">List</a></li>-->
-                <!--<li><a href="#map">Map</a></li>-->
-            <!--</ul>-->
-        <!--</nav>-->
-
-        <div id="search">
-            <div class="row">
-                <div class="pull-left">
-                    <input class="btn"  type="button" value="Start" id="startSearch">
+        <h1>Prime search</h1>
+        <div class="row">
+            <div id="search" class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p>Numbers enumerate: <span id="checkedCount"></span></p>
+                                <p>Primes found: <span id="primesCount"></span></p>
+                                <p>Application ran: <span id="ranTimes"></span></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p>Total time: <span id="totalTime"></span> sec.</p>
+                                <p>Max working time: <span id="maxTime"></span> sec.</p>
+                                <p>Min working time: <span id="minTime"></span> sec.</p>
+                            </div>
+                        </div>
+                        <div>
+                            <input class="btn btn-primary"  type="button" value="Start" id="start-search">
+                        </div>
+                    </div>
                 </div>
-                <div class="pull-left">
-                    <ul>
-                        <li>Numbers enumerate: <span id="checkedCount"></span></li>
-                        <li>Primes found: <span id="primesCount"></span></li>
-                        <li>Application ran: <span id="ranTimes"></span></li>
-                        <li>Total time: <span id="totalTime"></span></li>
-                        <li>Max: <span id="maxTime"></span></li>
-                        <li>Min: <span id="minTime"></span></li>
-                    </ul>
+            </div>
+
+
+            <div id="list" class="col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-body">
+                        <p>
+                            <input class="btn btn-primary"  type="button" value="Show found numbers" id="show-found">
+                        </p>
+
+                        <table cellpadding="0" cellspacing="0" border="0" class="display" id="numbers-list"></table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="map"  class="col-md-6">
+                <div class="panel panel-primary ">
+                    <div class="panel-body">
+                        <p>
+                            <input class="btn btn-primary"  type="button" value="Show found numbers" id="show-image">
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div id="list">
-
-        </div>
-
-        <div id="map">
-
-        </div>
-
     </div>
 
     <!--Scripts-->
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+
 
     <!--Custom scripts-->
     <script src="scripts/primeNumbersService.js"></script>
@@ -58,17 +73,41 @@
     <script>
         $(document).ready(function(){
             window.app = new app();
-            var searchSel = $("#startSearch");
-            searchSel.click(function(){
-                if(app.isRunning){
-                    searchSel.val("Start");
-                    app.stop();
+            window.app.init();
+
+            var searchSelector = $("#start-search");
+            searchSelector.click(function(){
+                if(window.app.isRunning){
+                    searchSelector.val("Start");
+                    window.app.stop();
                 }
                 else {
-                    searchSel.val("Stop");
-                    app.start();
+                    searchSelector.val("Stop");
+                    window.app.start();
                 }
             });
+
+            var showNumbersSelector = $("#show-found");
+            var numbersListTableSelector = $('#numbers-list');
+            var numbersListTable;
+            showNumbersSelector.click(function(){
+                window.app.getFoundNumbers(function(list){
+                    var out = [];
+                    for(var i=0; i<list.length; i++){
+                        out.push([list[i]]);
+                    }
+                    if(numbersListTable){
+                        numbersListTable.destroy();
+                    }
+                    numbersListTable = numbersListTableSelector.DataTable( {
+                        "data": out,
+                        "columns": [
+                            { "title": "Numbers" }
+                        ]
+                    } );
+                });
+            })
+
         });
     </script>
 </body>
