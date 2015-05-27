@@ -71,78 +71,14 @@
 
     <!--Custom scripts-->
     <script src="scripts/primeNumbersService.js"></script>
-    <script src="scripts/statisticBinding.js"></script>
     <script src="scripts/statistic.js"></script>
+    <script src="scripts/bindings.js"></script>
     <script src="scripts/app.js"></script>
 
     <script>
         $(document).ready(function(){
-            window.app = new app();
-            window.app.init();
-
-            $("#start-search").click(function(){
-                if(window.app.isRunning){
-                    $(this).val("Start");
-                    window.app.stop();
-                }
-                else {
-                    $(this).val("Stop");
-                    window.app.start();
-                }
-            });
-
-            var numbersListTable;
-            $("#show-found").click(function(){
-                window.app.getFoundNumbers(function(list){
-                    var out = [];
-                    for(var i=0; i<list.length; i++){
-                        out.push([list[i]]);
-                    }
-                    if(numbersListTable){
-                        numbersListTable.destroy();
-                    }
-                    numbersListTable = $('#numbers-list').DataTable( {
-                        "data": out,
-                        "columns": [
-                            { "title": "Numbers" }
-                        ]
-                    } );
-                });
-            })
-
-            $("#show-image").click(function(){
-                window.app.getFoundNumbers(function(list){
-                    var size = Math.ceil(Math.sqrt(list.length));
-
-                    var c = $("#canvas")[0];
-                    var scale = 5;
-                    c.width = c.height = size * scale;
-
-                    var ctx = c.getContext("2d");
-                    ctx.scale(scale,scale);
-
-                    // Clear
-                    ctx.fillStyle = "#FFFFFF";
-                    ctx.fillRect(0, 0, size, size);
-
-                    // Draw
-                    for(var i=0; i<size; i++){
-                        for(var j=0; j<size; j++){
-                            if(list.indexOf(i*size+j+1) > -1){
-                                ctx.fillStyle = "#000000";
-                            }
-                            else{
-                                ctx.fillStyle = "#FFFFFF";
-                            }
-                            ctx.fillRect(j, i, 1, 1);
-                        }
-                    }
-
-                    $(c).show();
-                });
-            });
-
-
+            var appInstance = new app();
+            appInstance.init();
         });
     </script>
 </body>

@@ -15,13 +15,45 @@ Statistic = function(){
                 set: function (val) {
                     var oldVal = self[key];
                     localStorage[key] = JSON.stringify(val);
-                    Object.getNotifier(this).notify({
-                        type: 'update',
-                        name: key,
-                        oldValue: oldVal
-                    });
+                    onPropertyChanged(key);
+//                    Object.getNotifier(this).notify({
+//                        type: 'update',
+//                        name: key,
+//                        oldValue: oldVal
+//                    });
                 }
             });
         })(props[index]);
+    }
+
+    var onPropertyChanged = function(propName){
+        var events = propertyChangedEvents[propName];
+        for(index in events){
+            events[index]();
+        }
+    }
+
+    var propertyChangedEvents = [];
+    
+    this.addPropertyChangedEvent = function(propName, f){
+        if(props.indexOf(propName) < 0){
+            return;
+        }
+        if(!propertyChangedEvents[propName]){
+            propertyChangedEvents[propName] = [];
+        }
+        propertyChangedEvents[propName].push(f);
+    }
+
+    this.removePropertyChangedEvent = function(propName, f){
+        if(props.indexOf(propName) < 0){
+            return;
+        }
+        if(propertyChangedEvents[propName]){
+            var index = propertyChangedEvents[propName].indexOf(f);
+            if(index > -1){
+                propertyChangedEvents[propName].splice(index, 1);
+            }
+        }
     }
 }

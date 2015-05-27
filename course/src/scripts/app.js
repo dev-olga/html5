@@ -5,7 +5,6 @@ app = function(){
     var startTime;
 
     var statistic = new Statistic();
-    new statisticBinding(statistic);
 
     this.isRunning = false;
 
@@ -14,6 +13,8 @@ app = function(){
             service = new primeNumbersService();
             service.init();
         }
+        bindingStatistic(statistic);
+        bindingsCommands(this);
     }
 
     this.stop = function(){
