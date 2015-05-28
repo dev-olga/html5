@@ -1,3 +1,10 @@
 canvas{
     border:1px solid #000000;
 }
+.panel-body > div{
+    margin-top: 10px;
+}
+.panel-body > div:first-of-type{
+    margin-top: 0px;
+}
+

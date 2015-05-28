@@ -39,10 +39,9 @@
             <div id="list" class="col-md-6">
                 <div class="panel panel-primary">
                     <div class="panel-body">
-                        <p>
+                        <div>
                             <input class="btn btn-primary"  type="button" value="Show found numbers" id="show-found">
-                        </p>
-
+                        </div>
                         <table cellpadding="0" cellspacing="0" border="0" class="display" id="numbers-list"></table>
                     </div>
                 </div>
@@ -51,12 +50,11 @@
             <div id="map" class="pull-left">
                 <div class="panel panel-primary ">
                     <div class="panel-body">
-                        <p>
-                            <input class="btn btn-primary"  type="button" value="Show found numbers" id="show-image">
-                        </p>
                         <div>
-                            <canvas id="canvas" width="300" height="300" style="display: none;">
-                            </canvas>
+                            <input class="btn btn-primary"  type="button" value="Show found numbers" id="show-image">
+                        </div>
+                        <div>
+                            <canvas id="canvas" width="300" height="300" style="display: none;"></canvas>
                         </div>
                     </div>
                 </div>
@@ -67,7 +65,8 @@
     <!--Scripts-->
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
     <!--Custom scripts-->
     <script src="scripts/primeNumbersService.js"></script>
