@@ -13,7 +13,6 @@ primeNumbersService = function(){
         {
             console.log("Your Browser does not support IndexedDB");
         }
-        //var request = indexedDB.open("numbersDB", 1.1);
         var request = indexedDB.open("numbersDB");
 
         request.onerror = function(event){

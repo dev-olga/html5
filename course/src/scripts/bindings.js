@@ -1,4 +1,4 @@
-bindingsCommands = function(app){
+bindingCommands = function(app){
     $("#start-search").click(function(){
         if(app.isRunning){
             $(this).val("Start");

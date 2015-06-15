@@ -14,7 +14,7 @@ app = function(){
             service.init();
         }
         bindingStatistic(statistic);
-        bindingsCommands(this);
+        bindingCommands(this);
     }
 
     this.stop = function(){
