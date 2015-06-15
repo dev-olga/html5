@@ -1,4 +1,4 @@
-primeNumbersService = function(){
+PrimeNumbersService = function(){
 
     var self =this;
     var db;

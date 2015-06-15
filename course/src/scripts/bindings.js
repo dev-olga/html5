@@ -1,17 +1,14 @@
 bindingCommands = function(app){
-    $("#start-search").click(function(){
-        if(app.isRunning){
-            $(this).val("Start");
-            app.stop();
-        }
-        else {
-            $(this).val("Stop");
-            app.start();
-        }
+    var numbersListTable;
+
+    $('#navigation a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
     });
 
-    var numbersListTable;
-    $("#show-found").click(function(){
+    $('#navigation a[href="#list"]').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show');
         app.getFoundNumbers(function(list){
             var out = [];
             for(var i=0; i<list.length; i++){
@@ -27,9 +24,9 @@ bindingCommands = function(app){
                 ]
             } );
         });
-    })
+    });
 
-    $("#show-image").click(function(){
+    $('#navigation a[href="#map"]').click(function (e) {
         app.getFoundNumbers(function(list){
             var size = Math.ceil(Math.sqrt(list.length));
 
@@ -56,9 +53,19 @@ bindingCommands = function(app){
                     ctx.fillRect(j, i, 1, 1);
                 }
             }
-
             $(c).show();
         });
+    });
+
+    $("#start-search").click(function(){
+        if(app.isRunning){
+            $(this).val("Start");
+            app.stop();
+        }
+        else {
+            $(this).val("Stop");
+            app.start();
+        }
     });
 }
 

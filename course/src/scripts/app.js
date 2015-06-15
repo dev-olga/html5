@@ -2,19 +2,30 @@ app = function(){
     var service;
     var worker;
     var timer;
+    var barsTimer;
     var startTime;
 
     var statistic = new Statistic();
+    var bars = new Bars();
 
     this.isRunning = false;
 
     this.init = function(){
+        var errors = checkRequirements();
+        if(errors.length > 0) {
+            if (this.onBrowserError) {
+                this.onBrowserError(errors);
+            }
+            return;
+        }
         if(!service){
-            service = new primeNumbersService();
+            service = new PrimeNumbersService();
             service.init();
         }
         bindingStatistic(statistic);
         bindingCommands(this);
+
+        bars.draw();
     }
 
     this.stop = function(){
@@ -26,7 +37,6 @@ app = function(){
         catch (ex){
             alert(ex);
         }
-
 
         var executionTime = Math.round(((new Date()) - startTime)/1000);
         if(statistic.maxTime < executionTime){
@@ -44,14 +54,45 @@ app = function(){
         statistic.ranTimes += 1;
         startTime = new Date();
         timer = setInterval(function(){statistic.totalTime += 1;}, 1000);
+        startBarsUpdate();
 
         if(!worker) {
             checkNext();
         }
     }
-    
+
     this.getFoundNumbers = function(callback){
         readAll(callback);
+    }
+
+    var startBarsUpdate = function(){
+        if(barsTimer){
+            return;
+        }
+        var primesCount = statistic.primes;
+        barsTimer = setInterval(function(){
+            var primes = statistic.primes;
+            bars.pushItem(primes - primesCount);
+            primesCount = primes;
+
+        }, 5000);
+    }
+
+    var checkRequirements = function(){
+        var errors = [];
+        var indexedDBSupported = !!(indexedDB || mozIndexedDB || webkitIndexedDB || msIndexedDB);
+        if(!indexedDBSupported){
+            errors.push("IndexedDB")
+        }
+        var canvas2DSupported = !!window.CanvasRenderingContext2D;
+        if(!canvas2DSupported){
+            errors.push("Canvas 2D graphics")
+        }
+        var workerSupport = typeof(Worker) !== "undefined";
+        if(!workerSupport){
+            errors.push("Background worker");
+        }
+        return errors;
     }
 
     var resetWorker = function(){

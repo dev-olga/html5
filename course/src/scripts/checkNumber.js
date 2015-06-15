@@ -1,6 +1,6 @@
 importScripts('primeNumbersService.js')
 function check(number){
-    var service = new primeNumbersService();
+    var service = new PrimeNumbersService();
     var msg = {
         error: false,
         isPrime: true

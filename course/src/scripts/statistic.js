@@ -16,11 +16,6 @@ Statistic = function(){
                     var oldVal = self[key];
                     localStorage[key] = JSON.stringify(val);
                     onPropertyChanged(key);
-//                    Object.getNotifier(this).notify({
-//                        type: 'update',
-//                        name: key,
-//                        oldValue: oldVal
-//                    });
                 }
             });
         })(props[index]);

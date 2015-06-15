@@ -12,51 +12,75 @@
 
     <div class="container">
         <h1>Prime search</h1>
-        <div class="row">
-            <div id="search" class="col-md-12">
-                <div class="panel panel-primary">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <p>Numbers enumerate: <span id="checkedCount"></span></p>
-                                <p>Primes found: <span id="primesCount"></span></p>
-                                <p>Application ran: <span id="ranTimes"></span></p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Total time: <span id="totalTime"></span> sec.</p>
-                                <p>Max working time: <span id="maxTime"></span> sec.</p>
-                                <p>Min working time: <span id="minTime"></span> sec.</p>
-                            </div>
-                        </div>
-                        <div>
+        <div role="tabpanel">
+
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist" id="navigation">
+                <li role="presentation" class="active"><a href="#info" aria-controls="home" role="tab" data-toggle="tab">Info</a></li>
+                <li role="presentation"><a href="#list" aria-controls="list" role="tab" data-toggle="tab">List</a></li>
+                <li role="presentation"><a href="#map" aria-controls="map" role="tab" data-toggle="tab">Map</a></li>
+                <!--<li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>-->
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="info">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h3>Statistic</h3>
+                            <p>Numbers enumerate: <span id="checkedCount"></span></p>
+                            <p>Primes found: <span id="primesCount"></span></p>
+                            <p>Application ran: <span id="ranTimes"></span></p>
+                            <p>Total time: <span id="totalTime"></span> sec.</p>
+                            <p>Max working time: <span id="maxTime"></span> sec.</p>
+                            <p>Min working time: <span id="minTime"></span> sec.</p>
                             <input class="btn btn-primary"  type="button" value="Start" id="start-search">
                         </div>
+                        <div class="col-md-4" style="text-align: center;">
+                            <h3>Finding primes in last minute</h3>
+                            <canvas id="bars" width="300" height="300"></canvas>
+                        </div>
                     </div>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="list">
+                    <table cellpadding="0" cellspacing="0" border="0" class="display" id="numbers-list"></table>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="map">
+                    <div>
+                        Scale:
+                    </div>
+                    <div>
+                        <canvas id="canvas" width="300" height="300" style="display: none;"></canvas>
+                    </div>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="settings">
+
                 </div>
             </div>
 
+        </div>
+    </div>
 
-            <div id="list" class="col-md-6">
-                <div class="panel panel-primary">
-                    <div class="panel-body">
-                        <div>
-                            <input class="btn btn-primary"  type="button" value="Show found numbers" id="show-found">
-                        </div>
-                        <table cellpadding="0" cellspacing="0" border="0" class="display" id="numbers-list"></table>
-                    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="browserErrorsDialog" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">HTML5 support</h4>
                 </div>
-            </div>
+                <div class="modal-body">
+                    Browser doesn't support:
+                    <ul id="browserErrors">
 
-            <div id="map" class="pull-left">
-                <div class="panel panel-primary ">
-                    <div class="panel-body">
-                        <div>
-                            <input class="btn btn-primary"  type="button" value="Show found numbers" id="show-image">
-                        </div>
-                        <div>
-                            <canvas id="canvas" width="300" height="300" style="display: none;"></canvas>
-                        </div>
-                    </div>
+                    </ul>
+                    Please view <a href='http://html5test.com/' target="_blank">http://html5test.com/</a>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -66,17 +90,45 @@
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
     <!--Custom scripts-->
     <script src="scripts/primeNumbersService.js"></script>
     <script src="scripts/statistic.js"></script>
     <script src="scripts/bindings.js"></script>
+    <script src="scripts/bars.js"></script>
     <script src="scripts/app.js"></script>
 
     <script>
+        var checkRequirements = function(){
+            var errors = [];
+            var indexedDBSupported = !!(indexedDB || mozIndexedDB || webkitIndexedDB || msIndexedDB);
+            if(!indexedDBSupported){
+                errors.push("IndexedDB")
+            }
+            var canvas2DSupported = !!window.CanvasRenderingContext2D;
+            if(!canvas2DSupported){
+                errors.push("Canvas 2D graphics")
+            }
+            var workerSupport = typeof(Worker) !== "undefined";
+            if(!workerSupport){
+                errors.push("Background worker");
+            }
+            return errors;
+        }
+
         $(document).ready(function(){
             var appInstance = new app();
+            appInstance.onBrowserError = function(errors){
+                if(errors.length > 0){
+                    $("#browserErrors").empty();
+                    for(var i=0; i < errors.length; i++){
+                        $("#browserErrors").append("<li>" + errors[i] + "</li>");
+                    }
+                    $('#browserErrorsDialog').modal();
+                }
+            }
             appInstance.init();
         });
     </script>
