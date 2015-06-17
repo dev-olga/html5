@@ -1,14 +1,10 @@
-bindingCommands = function(app){
-    var numbersListTable;
-
+bindingNavigation = function(app) {
     $('#navigation a').click(function (e) {
-        e.preventDefault()
-        $(this).tab('show')
+        window.location.hash = e.target.hash;
     });
 
-    $('#navigation a[href="#list"]').click(function (e) {
-        e.preventDefault()
-        $(this).tab('show');
+    var numbersListTable;
+    $('#navigation a[href="#list"]').on('shown.bs.tab', function (e) {
         app.getFoundNumbers(function(list){
             var out = [];
             for(var i=0; i<list.length; i++){
@@ -26,7 +22,7 @@ bindingCommands = function(app){
         });
     });
 
-    $('#navigation a[href="#map"]').click(function (e) {
+    $('#navigation a[href="#map"]').on('shown.bs.tab', function (e) {
         app.getFoundNumbers(function(list){
             var size = Math.ceil(Math.sqrt(list.length));
 
@@ -57,7 +53,14 @@ bindingCommands = function(app){
         });
     });
 
-    $("#start-search").click(function(){
+    if (location.hash !== '') {
+        $('#navigation a[href="' + location.hash + '"]').tab('show');
+    }
+};
+
+bindingCommands = function(app){
+    var toggleSearchSel =$("#toggle-search");
+    toggleSearchSel.click(function(){
         if(app.isRunning){
             $(this).val("Start");
             app.stop();
@@ -67,11 +70,17 @@ bindingCommands = function(app){
             app.start();
         }
     });
-}
+
+    $("#clear-data").click(function(){
+        if(app.isRunning){
+            toggleSearchSel.trigger('click');
+        }
+        app.clear();
+        $("#info-dialog").modal();
+    });
+};
 
 bindingStatistic = function(statistic){
-    var statistic = statistic;
-
     $("#checkedCount").text(statistic.lastChecked);
     $("#primesCount").text(statistic.primes);
     $("#ranTimes").text(statistic.ranTimes);
@@ -97,7 +106,7 @@ bindingStatistic = function(statistic){
     statistic.addPropertyChangedEvent("minTime", function(){
         $("#minTime").text(statistic.minTime);
     });
-}
+};
 
 //bindingStatistic = function(statistic){
 //    var statistic = statistic;

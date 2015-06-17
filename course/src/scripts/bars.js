@@ -50,8 +50,9 @@ Bars = function(options){
             ctx.fillStyle = settings.color;
             ctx.fillRect(x, c.height - barHeight, settings.barWidth, barHeight);
             ctx.fillStyle = "#FFF";
+            ctx.textBaseline = "top";
             if(value > 0) {
-                ctx.fillText(value, x, c.height - barHeight + 10);
+                ctx.fillText(value, x, c.height - barHeight);
             }
             x += settings.barWidth;
             ctx.fillRect(x, c.width - 1, settings.gap, 1);

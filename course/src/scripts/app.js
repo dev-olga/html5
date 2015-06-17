@@ -11,6 +11,7 @@ app = function(){
     this.isRunning = false;
 
     this.init = function(){
+        var self = this;
         var errors = checkRequirements();
         if(errors.length > 0) {
             if (this.onBrowserError) {
@@ -20,11 +21,14 @@ app = function(){
         }
         if(!service){
             service = new PrimeNumbersService();
+            service.onInit = function(){
+                bindingCommands(self);
+                bindingNavigation(self);
+            };
             service.init();
         }
-        bindingStatistic(statistic);
-        bindingCommands(this);
 
+        bindingStatistic(statistic);
         bars.draw();
     }
 
@@ -63,6 +67,11 @@ app = function(){
 
     this.getFoundNumbers = function(callback){
         readAll(callback);
+    }
+
+    this.clear = function(){
+        service.clear();
+        statistic.reset();
     }
 
     var startBarsUpdate = function(){

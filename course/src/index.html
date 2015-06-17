@@ -16,10 +16,10 @@
 
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist" id="navigation">
-                <li role="presentation" class="active"><a href="#info" aria-controls="home" role="tab" data-toggle="tab">Info</a></li>
+                <li role="presentation" class="active"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">Info</a></li>
                 <li role="presentation"><a href="#list" aria-controls="list" role="tab" data-toggle="tab">List</a></li>
                 <li role="presentation"><a href="#map" aria-controls="map" role="tab" data-toggle="tab">Map</a></li>
-                <!--<li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>-->
+                <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
             </ul>
 
             <!-- Tab panes -->
@@ -34,7 +34,7 @@
                             <p>Total time: <span id="totalTime"></span> sec.</p>
                             <p>Max working time: <span id="maxTime"></span> sec.</p>
                             <p>Min working time: <span id="minTime"></span> sec.</p>
-                            <input class="btn btn-primary"  type="button" value="Start" id="start-search">
+                            <input class="btn btn-primary"  type="button" value="Start" id="toggle-search">
                         </div>
                         <div class="col-md-4" style="text-align: center;">
                             <h3>Finding primes in last minute</h3>
@@ -57,7 +57,7 @@
                 </div>
 
                 <div role="tabpanel" class="tab-pane" id="settings">
-
+                    <button class="btn btn-danger" id="clear-data">Clear all stored data</button>
                 </div>
             </div>
 
@@ -65,7 +65,7 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="browserErrorsDialog" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="browser-errors-dialog" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -74,7 +74,7 @@
                 </div>
                 <div class="modal-body">
                     Browser doesn't support:
-                    <ul id="browserErrors">
+                    <ul id="browser-errors">
 
                     </ul>
                     Please view <a href='http://html5test.com/' target="_blank">http://html5test.com/</a>
@@ -86,6 +86,22 @@
         </div>
     </div>
 
+    <div class="modal fade" id="info-dialog" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Success</h4>
+                </div>
+                <div class="modal-body">
+                    All data is cleaned.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!--Scripts-->
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
@@ -122,11 +138,11 @@
             var appInstance = new app();
             appInstance.onBrowserError = function(errors){
                 if(errors.length > 0){
-                    $("#browserErrors").empty();
+                    $("#browser-errors").empty();
                     for(var i=0; i < errors.length; i++){
-                        $("#browserErrors").append("<li>" + errors[i] + "</li>");
+                        $("#browser-errors").append("<li>" + errors[i] + "</li>");
                     }
-                    $('#browserErrorsDialog').modal();
+                    $('#browser-errors-dialog').modal();
                 }
             }
             appInstance.init();

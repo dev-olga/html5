@@ -51,4 +51,10 @@ Statistic = function(){
             }
         }
     }
+
+    this.reset = function(){
+        for(index in props) {
+            this[props[index]] = 0;
+        }
+    }
 }

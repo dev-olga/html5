@@ -6,6 +6,8 @@ PrimeNumbersService = function(){
         PrimeNumbers: "primeNumbers"
     }
 
+    var DATABASE_NAME = "numbersDB";
+
     this.init = function(){
         indexedDB = indexedDB || mozIndexedDB || webkitIndexedDB || msIndexedDB;
 
@@ -13,7 +15,7 @@ PrimeNumbersService = function(){
         {
             console.log("Your Browser does not support IndexedDB");
         }
-        var request = indexedDB.open("numbersDB");
+        var request = indexedDB.open(DATABASE_NAME);
 
         request.onerror = function(event){
             if(self.onError){
@@ -52,6 +54,14 @@ PrimeNumbersService = function(){
             var objectStore = transaction.objectStore(TABLE_NAMES.PrimeNumbers);
             var cursor = objectStore.openCursor();
             return cursor;
+        }
+    }
+
+    this.clear = function(){
+        if(db){
+            var transaction = db.transaction([TABLE_NAMES.PrimeNumbers], "readwrite");
+            var objectStore = transaction.objectStore(TABLE_NAMES.PrimeNumbers);
+            objectStore.clear();
         }
     }
 };
