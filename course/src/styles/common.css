@@ -1,16 +1,6 @@
 canvas{
-    border:1px solid #000000;
-}
-#bars{
     border: none;
 }
-/*.panel-body > div{*/
-    /*margin-top: 10px;*/
-/*}*/
-/*.panel-body > div:first-of-type{*/
-    /*margin-top: 0px;*/
-/*}*/
-
 .tab-pane{
     padding: 10px;
 }
@@ -19,6 +9,9 @@ canvas{
 }
 .tab-pane > div:first-of-type{
     margin-top: 0px;
+}
+.center {
+    text-align: center;
 }
 
 

@@ -30,33 +30,39 @@
                             <h3>Statistic</h3>
                             <p>Numbers enumerate: <span id="checkedCount"></span></p>
                             <p>Primes found: <span id="primesCount"></span></p>
-                            <p>Application ran: <span id="ranTimes"></span></p>
-                            <p>Total time: <span id="totalTime"></span> sec.</p>
-                            <p>Max working time: <span id="maxTime"></span> sec.</p>
-                            <p>Min working time: <span id="minTime"></span> sec.</p>
+                            <p>Application ran: <span id="ranTimes"></span> times</p>
+                            <p>Total time: <span id="totalTime"></span> seconds</p>
+                            <p>Max working time: <span id="maxTime"></span> seconds</p>
+                            <p>Min working time: <span id="minTime"></span> seconds</p>
                             <input class="btn btn-primary"  type="button" value="Start" id="toggle-search">
                         </div>
                         <div class="col-md-4" style="text-align: center;">
                             <h3>Finding primes in last minute</h3>
-                            <canvas id="bars" width="300" height="300"></canvas>
+                            <canvas id="bars-canvas" width="300" height="300"></canvas>
                         </div>
                     </div>
                 </div>
 
                 <div role="tabpanel" class="tab-pane" id="list">
+                    <h3>List of prime numbers</h3>
                     <table cellpadding="0" cellspacing="0" border="0" class="display" id="numbers-list"></table>
                 </div>
 
                 <div role="tabpanel" class="tab-pane" id="map">
-                    <div>
-                        Scale:
+                    <h3>Map of numbers</h3>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p>Scale: <span id="scale-value"></span></p>
+                            <div id="scale-slider"></div>
+                        </div>
                     </div>
-                    <div>
-                        <canvas id="canvas" width="300" height="300" style="display: none;"></canvas>
+                    <div class="center">
+                        <canvas id="map-canvas" width="300" height="300" style="display: none;"></canvas>
                     </div>
                 </div>
 
                 <div role="tabpanel" class="tab-pane" id="settings">
+                    <h3>Settings</h3>
                     <button class="btn btn-danger" id="clear-data">Clear all stored data</button>
                 </div>
             </div>
@@ -110,10 +116,11 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
     <!--Custom scripts-->
-    <script src="scripts/primeNumbersService.js"></script>
+    <script src="scripts/prime-numbers-service.js"></script>
     <script src="scripts/statistic.js"></script>
     <script src="scripts/bindings.js"></script>
     <script src="scripts/bars.js"></script>
+    <script src="scripts/map.js"></script>
     <script src="scripts/app.js"></script>
 
     <script>
@@ -135,7 +142,7 @@
         }
 
         $(document).ready(function(){
-            var appInstance = new app();
+            var appInstance = new App();
             appInstance.onBrowserError = function(errors){
                 if(errors.length > 0){
                     $("#browser-errors").empty();

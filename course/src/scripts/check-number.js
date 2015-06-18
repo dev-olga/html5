@@ -1,4 +1,4 @@
-importScripts('primeNumbersService.js')
+importScripts('prime-numbers-service.js')
 function check(number){
     var service = new PrimeNumbersService();
     var msg = {

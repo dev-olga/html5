@@ -1,4 +1,4 @@
-app = function(){
+App = function(){
     var service;
     var worker;
     var timer;
@@ -19,16 +19,18 @@ app = function(){
             }
             return;
         }
+        var bindings = new Bindings();
         if(!service){
             service = new PrimeNumbersService();
             service.onInit = function(){
-                bindingCommands(self);
-                bindingNavigation(self);
+                bindings.bindingCommands(self);
+                bindings.bindingNavigation(self);
             };
             service.init();
         }
 
-        bindingStatistic(statistic);
+        bindings.bindingStatistic(statistic);
+        bindings.bindBars(bars);
         bars.draw();
     }
 
@@ -79,10 +81,18 @@ app = function(){
             return;
         }
         var primesCount = statistic.primes;
+        var checked = statistic.lastChecked;
         barsTimer = setInterval(function(){
             var primes = statistic.primes;
-            bars.pushItem(primes - primesCount);
+            var lastChecked = statistic.lastChecked;
+            if(primes - primesCount > 0) {
+                bars.pushItem(Math.round((lastChecked - checked) / (primes - primesCount)));
+            }
+            else{
+                bars.pushItem(lastChecked - checked);
+            }
             primesCount = primes;
+            checked = lastChecked;
 
         }, 5000);
     }
@@ -141,7 +151,7 @@ app = function(){
     }
 
     var createWorker = function(){
-        return new Worker("scripts/checkNumber.js");
+        return new Worker("scripts/check-number.js");
     }
     
     var readAll = function(callback){

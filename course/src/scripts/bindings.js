@@ -1,112 +1,117 @@
-bindingNavigation = function(app) {
-    $('#navigation a').click(function (e) {
-        window.location.hash = e.target.hash;
-    });
+Bindings = function(){
+    var map = new Map();
+    map.init();
 
-    var numbersListTable;
-    $('#navigation a[href="#list"]').on('shown.bs.tab', function (e) {
-        app.getFoundNumbers(function(list){
-            var out = [];
-            for(var i=0; i<list.length; i++){
-                out.push([list[i]]);
-            }
-            if(numbersListTable){
-                numbersListTable.destroy();
-            }
-            numbersListTable = $('#numbers-list').DataTable( {
-                "data": out,
-                "columns": [
-                    { "title": "Numbers" }
-                ]
-            } );
+    this.bindingNavigation = function(app) {
+        $("#navigation a").click(function (e) {
+            window.location.hash = e.target.hash;
         });
-    });
 
-    $('#navigation a[href="#map"]').on('shown.bs.tab', function (e) {
-        app.getFoundNumbers(function(list){
-            var size = Math.ceil(Math.sqrt(list.length));
-
-            var c = $("#canvas")[0];
-            var scale = 5;
-            c.width = c.height = size * scale;
-
-            var ctx = c.getContext("2d");
-            ctx.scale(scale,scale);
-
-            // Clear
-            ctx.fillStyle = "#FFFFFF";
-            ctx.fillRect(0, 0, size, size);
-
-            // Draw
-            for(var i=0; i<size; i++){
-                for(var j=0; j<size; j++){
-                    if(list.indexOf(i*size+j+1) > -1){
-                        ctx.fillStyle = "#000000";
-                    }
-                    else{
-                        ctx.fillStyle = "#FFFFFF";
-                    }
-                    ctx.fillRect(j, i, 1, 1);
+        var numbersListTable;
+        $('#navigation a[href="#list"]').on("shown.bs.tab", function (e) {
+            app.getFoundNumbers(function(list){
+                var out = [];
+                for(var i=0; i<list.length; i++){
+                    out.push([list[i]]);
                 }
-            }
-            $(c).show();
+                if(numbersListTable){
+                    numbersListTable.destroy();
+                }
+                numbersListTable = $("#numbers-list").DataTable( {
+                    "data": out,
+                    "columns": [
+                        { "title": "Numbers" }
+                    ]
+                } );
+            });
         });
-    });
 
-    if (location.hash !== '') {
-        $('#navigation a[href="' + location.hash + '"]').tab('show');
-    }
-};
+        $('#navigation a[href="#map"]').on('shown.bs.tab', function (e) {
+            app.getFoundNumbers(function(list){
+                map.settings.data = list;
+                map.draw();
+            });
+        });
 
-bindingCommands = function(app){
-    var toggleSearchSel =$("#toggle-search");
-    toggleSearchSel.click(function(){
-        if(app.isRunning){
-            $(this).val("Start");
-            app.stop();
+        if (location.hash !== '') {
+            $('#navigation a[href="' + location.hash + '"]').tab('show');
         }
-        else {
-            $(this).val("Stop");
-            app.start();
-        }
-    });
+    };
 
-    $("#clear-data").click(function(){
-        if(app.isRunning){
-            toggleSearchSel.trigger('click');
-        }
-        app.clear();
-        $("#info-dialog").modal();
-    });
-};
+    this.bindingCommands = function(app){
+        var toggleSearchSel =$("#toggle-search");
+        toggleSearchSel.click(function(){
+            if(app.isRunning){
+                $(this).val("Start");
+                $(this).removeClass("btn-danger");
+                $(this).addClass("btn-primary");
+                app.stop();
+            }
+            else {
+                $(this).val("Stop");
+                $(this).removeClass("btn-primary");
+                $(this).addClass("btn-danger");
+                app.start();
+            }
+        });
 
-bindingStatistic = function(statistic){
-    $("#checkedCount").text(statistic.lastChecked);
-    $("#primesCount").text(statistic.primes);
-    $("#ranTimes").text(statistic.ranTimes);
-    $("#totalTime").text(statistic.totalTime);
-    $("#maxTime").text(statistic.maxTime);
-    $("#minTime").text(statistic.minTime);
+        $("#clear-data").click(function(){
+            if(app.isRunning){
+                toggleSearchSel.trigger('click');
+            }
+            app.clear();
+            $("#info-dialog").modal();
+        });
 
-    statistic.addPropertyChangedEvent("lastChecked", function(){
+        $( "#scale-value" ).text(1);
+        $("#scale-slider").slider({
+            value: 1,
+            min: 1,
+            max: 10,
+            step: 1,
+            slide: function( event, ui ) {
+                $( "#scale-value" ).text(ui.value);
+                map.settings.scale = ui.value;
+                map.draw();
+            }
+        });
+    };
+
+    this.bindingStatistic = function(statistic){
         $("#checkedCount").text(statistic.lastChecked);
-    });
-    statistic.addPropertyChangedEvent("primes", function(){
         $("#primesCount").text(statistic.primes);
-    });
-    statistic.addPropertyChangedEvent("ranTimes", function(){
         $("#ranTimes").text(statistic.ranTimes);
-    });
-    statistic.addPropertyChangedEvent("totalTime", function(){
         $("#totalTime").text(statistic.totalTime);
-    });
-    statistic.addPropertyChangedEvent("maxTime", function(){
         $("#maxTime").text(statistic.maxTime);
-    });
-    statistic.addPropertyChangedEvent("minTime", function(){
         $("#minTime").text(statistic.minTime);
-    });
-};
+
+        statistic.addPropertyChangedEvent("lastChecked", function(){
+            $("#checkedCount").text(statistic.lastChecked);
+        });
+        statistic.addPropertyChangedEvent("primes", function(){
+            $("#primesCount").text(statistic.primes);
+        });
+        statistic.addPropertyChangedEvent("ranTimes", function(){
+            $("#ranTimes").text(statistic.ranTimes);
+        });
+        statistic.addPropertyChangedEvent("totalTime", function(){
+            $("#totalTime").text(statistic.totalTime);
+        });
+        statistic.addPropertyChangedEvent("maxTime", function(){
+            $("#maxTime").text(statistic.maxTime);
+        });
+        statistic.addPropertyChangedEvent("minTime", function(){
+            $("#minTime").text(statistic.minTime);
+        });
+    };
+
+    this.bindBars = function(bars){
+        bars.init({
+            canvasId: "bars-canvas"
+        })
+    }
+}
+
 
 //bindingStatistic = function(statistic){
 //    var statistic = statistic;
