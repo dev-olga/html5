@@ -5,7 +5,7 @@ Bars = function(){
         canvasId: "bars",
         color: "#337ab7",
         data: [],
-        dataSize: 10,
+        dataSize: 12,
         barWidth: 20,
         gap: 1,
         height: 250
